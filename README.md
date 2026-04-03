@@ -28,7 +28,7 @@ chatgpt-export ~/Downloads/chatgpt-export.zip --output ChatGPT
 chatgpt-export conversations.json --output ChatGPT
 ```
 
-If no input is provided, the CLI defaults to `conversations.json` in the current directory.
+If no input is provided, the CLI prompts for the export path.
 
 You can also run it without installing:
 

@@ -23,7 +23,6 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "input",
         nargs="?",
-        default="conversations.json",
         help="Path to a ChatGPT export zip or conversations.json file.",
     )
     parser.add_argument(
@@ -40,7 +39,11 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
-    input_path = Path(args.input)
+    input_value = args.input or input("Path to ChatGPT export (.zip or conversations.json): ").strip()
+    if not input_value:
+        parser.exit(1, "Error: a ChatGPT export path is required.\n")
+
+    input_path = Path(input_value)
     output_dir = Path(args.output)
 
     try:

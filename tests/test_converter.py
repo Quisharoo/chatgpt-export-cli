@@ -91,6 +91,20 @@ def test_cli_end_to_end():
         assert "test_conv_001" in files[0].name
 
 
+def test_cli_prompts_for_input_path(monkeypatch):
+    with tempfile.TemporaryDirectory() as temp_dir:
+        temp_path = Path(temp_dir)
+        input_path = temp_path / "conversations.json"
+        output_dir = temp_path / "ChatGPT"
+        input_path.write_text(json.dumps([sample_conversation()]), encoding="utf-8")
+
+        monkeypatch.setattr("builtins.input", lambda _: str(input_path))
+        exit_code = main(["--output", str(output_dir)])
+
+        assert exit_code == 0
+        assert len(list(output_dir.glob("*.md"))) == 1
+
+
 def test_cli_skips_existing_output_ids():
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_path = Path(temp_dir)
