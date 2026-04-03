@@ -61,20 +61,29 @@ def clean_citation_artifacts(content: str) -> str:
 def convert_conversation_to_markdown(conversation: Dict) -> str:
     """Convert a single ChatGPT conversation to Markdown."""
     created = datetime.fromtimestamp(conversation.get("create_time", 0))
+    title = conversation.get("title", "Untitled Conversation")
+    conversation_id = conversation.get("id", "unknown")
     messages = extract_messages(conversation.get("mapping", {}))
 
     lines = [
-        f"**Created:** {created.strftime('%Y-%m-%d, %H:%M:%S')}",
-        "",
         "---",
+        f'title: "{_escape_yaml_string(title)}"',
+        f'conversation_id: "{_escape_yaml_string(conversation_id)}"',
+        f'created: "{created.strftime("%Y-%m-%d %H:%M:%S")}"',
+        'source: "chatgpt-export-cli"',
+        "tags:",
+        "  - chatgpt",
+        "---",
+        "",
+        f"# {title}",
         "",
     ]
 
-    for message in messages:
-        author = "**🧑‍💬 User**" if message["author"] == "user" else "**🤖 Assistant**"
-        lines.append(author)
+    for index, message in enumerate(messages, start=1):
+        author = "User" if message["author"] == "user" else "Assistant"
+        lines.append(f"## {author} {index}")
         lines.append("")
-        lines.extend(_format_blockquote(message["content"]))
+        lines.append(clean_citation_artifacts(message["content"]))
         lines.append("")
 
     return clean_citation_artifacts("\n".join(lines))
@@ -193,12 +202,12 @@ def _extract_text_content(content: object) -> str:
     return ""
 
 
-def _format_blockquote(content: str) -> List[str]:
-    return [">" if line.strip() == "" else f"> {line}" for line in content.splitlines()]
-
-
 def _clean_filename(text: str) -> str:
     text = re.sub(r'[<>:"/\\|?*]', "", text)
     text = re.sub(r"[^\w\s.-]", "", text)
     text = re.sub(r"\s+", " ", text).strip()
     return text[:100]
+
+
+def _escape_yaml_string(text: str) -> str:
+    return str(text).replace("\\", "\\\\").replace('"', '\\"')

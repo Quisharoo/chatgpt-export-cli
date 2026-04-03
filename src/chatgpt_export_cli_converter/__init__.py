@@ -1,6 +1,6 @@
 """ChatGPT export CLI converter."""
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 from .core import (
     clean_citation_artifacts,

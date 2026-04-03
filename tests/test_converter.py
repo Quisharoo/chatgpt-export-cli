@@ -48,9 +48,11 @@ def test_extract_messages():
 
 def test_convert_conversation_to_markdown():
     markdown = convert_conversation_to_markdown(sample_conversation())
-    assert "**Created:**" in markdown
-    assert "**🧑‍💬 User**" in markdown
-    assert "**🤖 Assistant**" in markdown
+    assert 'title: "Python Best Practices"' in markdown
+    assert 'conversation_id: "test_conv_001"' in markdown
+    assert "# Python Best Practices" in markdown
+    assert "## User 1" in markdown
+    assert "## Assistant 2" in markdown
 
 
 def test_generate_filename_includes_id():
@@ -127,4 +129,4 @@ def test_cli_reports_version(capsys):
     except SystemExit as exc:
         assert exc.code == 0
     captured = capsys.readouterr()
-    assert "0.1.0" in captured.out
+    assert "0.1.1" in captured.out

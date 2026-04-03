@@ -42,12 +42,36 @@ PYTHONPATH=src python3 -m chatgpt_export_cli_converter conversations.json --outp
 - skips conversations already written to the output directory
 - uses filenames prefixed with the conversation ID for stable dedupe
 - filters broken inline citation artifacts from exported text
+- emits YAML frontmatter for Obsidian-friendly metadata
 - keeps output local on disk
 
 Example filename:
 
 ```text
 [abc123] My Conversation Title.md
+```
+
+Example Markdown shape:
+
+```md
+---
+title: "My Conversation Title"
+conversation_id: "abc123"
+created: "2026-04-03 10:00:00"
+source: "chatgpt-export-cli"
+tags:
+  - chatgpt
+---
+
+# My Conversation Title
+
+## User 1
+
+Question here.
+
+## Assistant 2
+
+Answer here.
 ```
 
 ## Development
